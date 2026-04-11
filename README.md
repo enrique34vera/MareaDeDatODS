@@ -1,6 +1,8 @@
-Nombre del equipo: Marea de datODS
+\## Equipo Marea de DatODS
 
-Integrantes:
+
+
+\## Integrantes:
 
 * Utrera Hernández Sophia Alejandra
 * Vera Rodríguez Luis Enrique
@@ -8,15 +10,18 @@ Integrantes:
 
 
 
-ODS elegidos:
+\## ODS elegidos:
 
 * 11: Ciudades y Comunidades Sostenibles
 * 13: Acción por el Clima
-* 14: Vida Submarina
 
 
 
-Descripción:
+\## Descripción:
 
-Un visualizador de información metereológica, del mar, vulnerabilidad y amenazas por fenómenos naturales.
+Un visualizador de información ambiental, vulnerabilidad y amenazas por fenómenos naturales para la ciudad costera de Veracruz dirigido a público en general.
+
+
+
+\## Metadatos de los datos:
 
