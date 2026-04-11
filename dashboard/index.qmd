@@ -5,7 +5,6 @@ format:
     dashboard:
         theme: [zephyr, custom.scss]
 ---
-
 ```{python}
 # Importacion de librerias
 import pandas as pd
@@ -16,10 +15,10 @@ from ipyleaflet import Map, basemaps, Marker, basemap_to_tiles
 
 ```{python}
 # Lectura de datos
-nivel_del_mar = pd.read_csv(".\data\data-1_metros.csv")
-temperatura = pd.read_csv(".\data\data-1_gradoscelsius.csv")
-humedad_rel = pd.read_csv(".\data\data-1_porcentaje.csv")
-velocidad_viento = pd.read_csv(".\data\data-1_metrosxsegundo.csv")
+nivel_del_mar = pd.read_csv("../datos/data-1_metros.csv")
+temperatura = pd.read_csv("../datos/data-1_gradoscelsius.csv")
+humedad_rel = pd.read_csv("../datos/data-1_porcentaje.csv")
+velocidad_viento = pd.read_csv("../datos/data-1_metrosxsegundo.csv")
 
 ```
 
@@ -58,14 +57,15 @@ El estado de Veracruz ocupa el segundo lugar a nivel nacional como la entidad co
 
 ## Column {height=25%}
 
-```` {python}
+``` {python}
 #| component: valuebox
 #| title: Temperatura [°C]
 dict(
     icon="thermometer-half", 
     color="light",
-    value=temperatura.iloc[-1]['Temperatura atmosferica'])
-````
+    value=float(temperatura['Temperatura atmosferica'].dropna().iloc[-1])
+)
+```
 
 ```{python}
 #| component: valuebox
@@ -73,7 +73,8 @@ dict(
 dict(
     icon="droplet-half", 
     color="light", 
-    value=humedad_rel.iloc[-1]['Humedad relativa'])
+    value=float(humedad_rel['Humedad relativa'].dropna().iloc[-1])
+)
 ```
 
 ```{python}
@@ -82,7 +83,8 @@ dict(
 dict(
     icon="water", 
     color="light", 
-    value=nivel_del_mar['Radar promedio'].dropna().iloc[-1])
+    value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
+)
 ```
 
 ```{python}
@@ -91,7 +93,8 @@ dict(
 dict(
     icon="wind", 
     color="light", 
-    value=velocidad_viento.iloc[-1]['Velocidad de rafaga'])
+    value=float(velocidad_viento['Velocidad de rafaga'].dropna().iloc[-1])
+)
 ```
 
 ## Column {height=10%}
@@ -146,6 +149,7 @@ figV.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
 
 ```{python}
 #| output: False
+
 mapa=Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
     center=(19.196974, -96.137838), zoom=7)
 marcador=Marker(location=(19.196974, -96.137838), draggable=True)
@@ -176,8 +180,70 @@ fig.add_trace(go.Scatter(x=valor_pronostico['Tiempo_datetime'], y=valor_pronosti
 #| title: Pronóstico Nivel del mar
 fig.update_layout(xaxis_title=" ", yaxis_title="[metros]")
 ```
+```{python}
+riesgo=0
+# nivel del mar
+if nivel_del_mar['Radar promedio'].dropna().iloc[-1] > 1.4:
+    riesgo +=1
+# viento
+if velocidad_viento['Velocidad de rafaga'].dropna().iloc[-1] > 40:
+    riesgo +=1
+# temperatura
+if temperatura['Temperatura atmosferica'].dropna().iloc[-1] > 35:
+    riesgo +=1
+# humedad
+if humedad_rel['Humedad relativa'].dropna().iloc[-1] > 50:
+    riesgo +=1
+if riesgo >= 3:
+    semaforo = "🔴 ALTO RIESGO"
+    color = "danger"
+elif riesgo ==2:
+    semaforo = "🟡 PRECAUCIÓN"
+    color = "warning"
+else:
+    semaforo = "🟢 SEGURO"
+    color= "success"
+```
+```{python}
+razones= []
+if nivel_del_mar['Radar promedio'].dropna().iloc[-1] > 1.4:
+    razones.append("Nivel del mar elevado")
+if velocidad_viento ['Velocidad de rafaga'].dropna().iloc[-1] > 40:
+    razones.append("Viento fuerte")
+if temperatura['Temperatura atmosferica'].dropna().iloc[-1] > 35:
+    razones.append("Temperatura alta")
+if humedad_rel['Humedad relativa'].dropna().iloc[-1] > 50:
+    razones.append("Humedad elevada")
+if len(razones) == 0:
+    explicacion ="Sin condiciones de riesgo"
+else:
+    explicacion = "\n".join(razones)
+```
+# Alertas y semáforo
 
-### Row {height=15%}
+## Row 
+
+### Column {width=40%}
+
+```{python}
+#| component: valuebox
+#| title: Semáforo de condiciones
+dict(
+    icon="traffic-light",
+    color="light",
+    value=semaforo
+)
+```
+```{python}
+#| component: valuebox
+dict(
+    icon="exclamation-triangle",
+    color="light",
+    value=explicacion
+)
+```
+
+### column {width=60%}
 
 ::: {.valuebox title="Alertamiento por tsunami" icon="tsunami" color="light"}
 Último boletin emitido por SEMAR:
