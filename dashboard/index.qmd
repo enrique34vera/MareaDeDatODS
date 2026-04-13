@@ -16,11 +16,11 @@ from ipyleaflet import Map, basemaps, Marker, basemap_to_tiles
 
 ```{python}
 # Lectura de datos
-nivel_del_mar = pd.read_csv(".\data\data-1_metros.csv")
-temperatura = pd.read_csv(".\data\data-1_gradoscelsius.csv")
-humedad_rel = pd.read_csv(".\data\data-1_porcentaje.csv")
-velocidad_viento = pd.read_csv(".\data\data-1_metrosxsegundo.csv")
-
+nivel_del_mar = pd.read_csv("..\datos\data-1_metros.csv")
+temperatura = pd.read_csv("..\datos\data-1_gradoscelsius.csv")
+humedad_rel = pd.read_csv("..\datos\data-1_porcentaje.csv")
+velocidad_viento = pd.read_csv("..\datos\data-1_metrosxsegundo.csv")
+poblacion_Veracruz = pd.read_csv('..\datos\conjunto_de_datos_iter_30CSV20.csv', usecols=[3,5,9])
 ```
 
 ```{python}
@@ -40,16 +40,27 @@ velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], f
 valor_pronostico = nivel_del_mar.iloc[3580:]
 valor_medido = nivel_del_mar.iloc[0:3580]
 
+poblacionXmunicipio = poblacion_Veracruz.loc[poblacion_Veracruz['NOM_LOC']=='Total del Municipio']
+municipios_mas_poblados=poblacionXmunicipio.sort_values(by='POBTOT', ascending=False).iloc[0:10]
 ```
 
 # Sabías que...
 
-## Row {height=20%}
+## Column {height=20%}
 ::: {.valuebox icon="people-fill" color="primary"}
 En el municipio de Veracruz viven más de 600,000 personas, el área urbana más grande del estado
 :::
 
-## Row {height=20%}
+```{python}
+#| output: False
+fig=px.bar(municipios_mas_poblados, x='NOM_MUN', y='POBTOT', color_discrete_sequence=['indianred'], text_auto=True)
+```
+```{python}
+#| title: Municipios más poblados del estado de Veracruz
+fig.update_layout(xaxis_title=" ", yaxis_title="Población total", xaxis_tickangle=45)
+```
+
+## Column {height=20%}
 ::: {.valuebox icon="tropical-storm" color="primary"}
 El estado de Veracruz ocupa el segundo lugar a nivel nacional como la entidad con más impactos por ciclones tropicales
 :::
