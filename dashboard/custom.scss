@@ -1,0 +1,22 @@
+/*-- scss:defaults --*/
+
+$body-text-align: center;
+
+
+/*-- scss:rules --*/
+.bslib-value-box .value-box-value {
+  font-size: 3rem !important;   /* Controla el tamaño del número */
+  font-weight: 600;     /* Grosor de la fuente (ej. bold) */
+  line-height: 1;     /* Ajusta el espacio vertical si el número es muy grande */
+}
+
+.bslib-value-box .value-box-icon {
+  font-size: 4rem !important;    /* Tamaño general del icono */
+  max-width: 100px;     /* Evita que el icono desplace al texto en pantallas pequeñas */
+  opacity: 0.8;         /* Controla qué tanto resalta el icono sobre el fondo */
+}
+
+.bslib-value-box .value-box-title {
+  font-size: 1rem !important;    /* Tamaño del texto descriptivo */
+  letter-spacing: 0.05em;    /* Espaciado entre letras para mejor lectura */
+}

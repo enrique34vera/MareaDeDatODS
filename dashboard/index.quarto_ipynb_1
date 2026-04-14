@@ -1,0 +1,372 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: Tablero\n",
+        "author: Marea de DatODS (InforMARte es cuidarte)\n",
+        "format: \n",
+        "    dashboard:\n",
+        "        theme: [zephyr, custom.scss]\n",
+        "---"
+      ],
+      "id": "017cb16a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Importacion de librerias\n",
+        "import pandas as pd\n",
+        "import plotly.express as px\n",
+        "import plotly.graph_objects as go\n",
+        "from ipyleaflet import Map, basemaps, Marker, basemap_to_tiles"
+      ],
+      "id": "00bfcd20",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Lectura de datos\n",
+        "nivel_del_mar = pd.read_csv(\".\\data\\data-1_metros.csv\")\n",
+        "temperatura = pd.read_csv(\".\\data\\data-1_gradoscelsius.csv\")\n",
+        "humedad_rel = pd.read_csv(\".\\data\\data-1_porcentaje.csv\")\n",
+        "velocidad_viento = pd.read_csv(\".\\data\\data-1_metrosxsegundo.csv\")"
+      ],
+      "id": "1d02421e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Preparar los datos\n",
+        "\n",
+        "#  1. Cambiar el nombre de las columnas en el dataframe 'nivel_del_mar'\n",
+        "nivel_del_mar.rename(columns={'Nivel del mar (radar promedio)':'Radar promedio', 'Nivel del mar (flotador)':'Flotador'},\n",
+        "                    inplace=True)\n",
+        "\n",
+        "#  2. Creación de una nueva columna que contiene las fechas del archivo en formato 'datetime'\n",
+        "nivel_del_mar['Tiempo_datetime']=pd.to_datetime(nivel_del_mar['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "temperatura['Tiempo_datetime']=pd.to_datetime(temperatura['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "humedad_rel['Tiempo_datetime']=pd.to_datetime(humedad_rel['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "\n",
+        "#  3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico\n",
+        "valor_pronostico = nivel_del_mar.iloc[3580:]\n",
+        "valor_medido = nivel_del_mar.iloc[0:3580]"
+      ],
+      "id": "bb979419",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Sabías que...\n",
+        "\n",
+        "## Row {height=20%}\n",
+        "::: {.valuebox icon=\"people-fill\" color=\"primary\"}\n",
+        "En el municipio de Veracruz viven más de 600,000 personas, el área urbana más grande del estado\n",
+        ":::\n",
+        "\n",
+        "## Row {height=20%}\n",
+        "::: {.valuebox icon=\"tropical-storm\" color=\"primary\"}\n",
+        "El estado de Veracruz ocupa el segundo lugar a nivel nacional como la entidad con más impactos por ciclones tropicales\n",
+        ":::\n",
+        "\n",
+        "# Pronósticos y condiciones actuales\n",
+        "\n",
+        "## Column {height=25%}"
+      ],
+      "id": "f8eb6a70"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Temperatura [°C]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"thermometer-half\", \n",
+        "    color=\"light\",\n",
+        "    value=temperatura.iloc[-1]['Temperatura atmosferica'])"
+      ],
+      "id": "87e2e2e4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Humedad relativa %"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"droplet-half\", \n",
+        "    color=\"light\", \n",
+        "    value=humedad_rel.iloc[-1]['Humedad relativa'])"
+      ],
+      "id": "5ece84cb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Nivel del mar [metros]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"water\", \n",
+        "    color=\"light\", \n",
+        "    value=nivel_del_mar['Radar promedio'].dropna().iloc[-1])"
+      ],
+      "id": "e89e2cb6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Velocidad de rafaga [m/s]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"wind\", \n",
+        "    color=\"light\", \n",
+        "    value=velocidad_viento.iloc[-1]['Velocidad de rafaga'])"
+      ],
+      "id": "af5ba882",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {height=10%}"
+      ],
+      "id": "9a3fac67"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figT=go.Figure()\n",
+        "figT.add_trace(go.Scatter(x=temperatura['Tiempo_datetime'], y=temperatura['Temperatura atmosferica'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "237f0fd3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Temperatura"
+      },
+      "source": [
+        "figT.update_layout(xaxis_title=\" \", yaxis_title=\"[°C]\")"
+      ],
+      "id": "3768f15f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figH=go.Figure()\n",
+        "figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "e81a228e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Humedad relativa"
+      },
+      "source": [
+        "figH.update_layout(xaxis_title=\" \", yaxis_title=\"[%]\")"
+      ],
+      "id": "3e81329e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figM=go.Figure()\n",
+        "figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "c1ca444a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Nivel del Mar"
+      },
+      "source": [
+        "figM.update_layout(xaxis_title=\" \", yaxis_title=\"[metros]\")"
+      ],
+      "id": "45ccea7f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figV=go.Figure()\n",
+        "figV.add_trace(go.Scatter(x=velocidad_viento['Tiempo_datetime'], y=velocidad_viento['Velocidad de rafaga'],\n",
+        "                         name='Velocidad de rafaga', line=dict(color='green',width=2)))"
+      ],
+      "id": "20c57c2b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Velocidad de Ragafa"
+      },
+      "source": [
+        "figV.update_layout(xaxis_title=\" \", yaxis_title=\"[m/s]\")"
+      ],
+      "id": "44e92e6e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {width=60%}\n",
+        "\n",
+        "### Row {height=30%}"
+      ],
+      "id": "ae2b014a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "mapa=Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),\n",
+        "    center=(19.196974, -96.137838), zoom=7)\n",
+        "marcador=Marker(location=(19.196974, -96.137838), draggable=True)"
+      ],
+      "id": "96a8710d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Mapa"
+      },
+      "source": [
+        "mapa.add(marcador)"
+      ],
+      "id": "2d1ca288",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Row {height=35%}"
+      ],
+      "id": "17c940ee"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "fig=go.Figure()\n",
+        "fig.add_trace(go.Scatter(x=valor_medido['Tiempo_datetime'], y=valor_medido['Radar promedio'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "6c0262a6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "fig.add_trace(go.Scatter(x=valor_pronostico['Tiempo_datetime'], y=valor_pronostico['Pronostico'],\n",
+        "                         name='Pronóstico', line=dict(color='blue',width=3)))"
+      ],
+      "id": "59e0704d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Pronóstico Nivel del mar"
+      },
+      "source": [
+        "fig.update_layout(xaxis_title=\" \", yaxis_title=\"[metros]\")"
+      ],
+      "id": "109e3592",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Row {height=15%}\n",
+        "\n",
+        "::: {.valuebox title=\"Alertamiento por tsunami\" icon=\"tsunami\" color=\"light\"}\n",
+        "Último boletin emitido por SEMAR:\n",
+        "<https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html>\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Alertamiento por huracán\" icon=\"hurricane\" color=\"light\"}\n",
+        "Pronóstico emitido por el Meteorológico Nacional:\n",
+        "<https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general>\n",
+        ":::"
+      ],
+      "id": "3d9ad88b"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\SOPHIA UTRERA\\MareaDeDatODS\\.venv\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

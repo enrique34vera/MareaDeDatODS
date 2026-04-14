@@ -1,0 +1,496 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: InforMARte es cuidarte\n",
+        "author: Marea de DatODS\n",
+        "format: \n",
+        "    dashboard:\n",
+        "        theme: [zephyr, custom.scss]\n",
+        "---"
+      ],
+      "id": "86dce3de"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Importacion de librerias\n",
+        "import pandas as pd\n",
+        "import plotly.express as px\n",
+        "import plotly.graph_objects as go\n",
+        "from ipyleaflet import Map, basemaps, Marker, basemap_to_tiles"
+      ],
+      "id": "fcb7976b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Lectura de datos\n",
+        "nivel_del_mar = pd.read_csv(\"..\\datos\\data-1_metros.csv\")\n",
+        "temperatura = pd.read_csv(\"..\\datos\\data-1_gradoscelsius.csv\")\n",
+        "humedad_rel = pd.read_csv(\"..\\datos\\data-1_porcentaje.csv\")\n",
+        "velocidad_viento = pd.read_csv(\"..\\datos\\data-1_metrosxsegundo.csv\")\n",
+        "poblacion_Veracruz = pd.read_csv('..\\datos\\conjunto_de_datos_iter_30CSV20.csv', usecols=[3,5,9])\n",
+        "impacto_Nacional=pd.read_excel('../datos/Basehistorica_2000_a_2024.xlsx', usecols=[0,1,2,3,4,5,6,8,9,15])"
+      ],
+      "id": "302b758e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Preparar los datos\n",
+        "\n",
+        "#  1. Cambiar el nombre de las columnas en el dataframe 'nivel_del_mar'\n",
+        "nivel_del_mar.rename(columns={'Nivel del mar (radar promedio)':'Radar promedio', 'Nivel del mar (flotador)':'Flotador'},\n",
+        "                    inplace=True)\n",
+        "\n",
+        "#  2. Creación de una nueva columna que contiene las fechas del archivo en formato 'datetime'\n",
+        "nivel_del_mar['Tiempo_datetime']=pd.to_datetime(nivel_del_mar['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "temperatura['Tiempo_datetime']=pd.to_datetime(temperatura['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "humedad_rel['Tiempo_datetime']=pd.to_datetime(humedad_rel['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')\n",
+        "\n",
+        "#  3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico\n",
+        "valor_pronostico = nivel_del_mar.iloc[3580:]\n",
+        "valor_medido = nivel_del_mar.iloc[0:3580]\n",
+        "\n",
+        "#  4. Filtrado de datos de población de INEGI\n",
+        "poblacionXmunicipio = poblacion_Veracruz.loc[poblacion_Veracruz['NOM_LOC']=='Total del Municipio']\n",
+        "municipios_mas_poblados=poblacionXmunicipio.sort_values(by='POBTOT', ascending=False).iloc[0:10]\n",
+        "\n",
+        "#  5. Filtrado de datos de impacto socioeconómico de CENAPRED\n",
+        "impacto_Veracruz=impacto_Nacional.loc[impacto_Nacional['Estado']=='Veracruz']\n",
+        "impacto_Veracruz_Hidrometeo=impacto_Veracruz.loc[impacto_Veracruz['Clasificación del fenómeno']=='Hidrometeorológico']\n",
+        "\n",
+        "#   5.1. Clasificación de los fenómenos\n",
+        "num_tipo_fenomeno = impacto_Veracruz_Hidrometeo['Tipo de fenómeno'].value_counts().iloc[0:11]\n",
+        "\n",
+        "#   5.2. Cuantificación de la población afectada\n",
+        "lluvias = impacto_Veracruz_Hidrometeo.loc[impacto_Veracruz_Hidrometeo['Tipo de fenómeno']=='Lluvias']\n",
+        "lluvias_poblacion_afect = lluvias['Población afectada '].replace('SD',0).sum()\n",
+        "poblacion_afect = {'Lluvias':lluvias_poblacion_afect}\n",
+        "\n",
+        "inundacion = impacto_Veracruz_Hidrometeo.loc[impacto_Veracruz_Hidrometeo['Tipo de fenómeno']=='Inundación']\n",
+        "inundacion_poblacion_afect = inundacion['Población afectada '].replace('SD',0).sum()\n",
+        "poblacion_afect['Inundación']=inundacion_poblacion_afect\n",
+        "\n",
+        "fuertes_vientos = impacto_Veracruz_Hidrometeo.loc[impacto_Veracruz_Hidrometeo['Tipo de fenómeno']=='Fuertes vientos ']\n",
+        "vientos_poblacion_afect = fuertes_vientos['Población afectada '].replace('SD',0).sum()\n",
+        "poblacion_afect['Fuertes vientos']=vientos_poblacion_afect\n",
+        "\n",
+        "bajas_temperaturas = impacto_Veracruz_Hidrometeo.loc[impacto_Veracruz_Hidrometeo['Tipo de fenómeno']=='Bajas temperaturas ']\n",
+        "bajatemp_poblacion_afect = bajas_temperaturas['Población afectada '].replace('SD',0).sum()\n",
+        "poblacion_afect['Bajas temperaturas']=bajatemp_poblacion_afect\n",
+        "\n",
+        "ciclon_tropical = impacto_Veracruz_Hidrometeo.loc[impacto_Veracruz_Hidrometeo['Tipo de fenómeno']=='Ciclón tropical']\n",
+        "ciclon_poblacion_afect = ciclon_tropical['Población afectada '].replace('SD',0).sum()\n",
+        "poblacion_afect['Ciclón tropical']=ciclon_poblacion_afect\n",
+        "\n",
+        "#   5.3. Cuantificación de los daños en millones de pesos\n",
+        "lluvias_danos_econ = lluvias['Total de daños (millones de pesos)'].sum()\n",
+        "danos_economicos = {'Lluvias':lluvias_danos_econ}\n",
+        "\n",
+        "inundacion_danos_econ = inundacion['Total de daños (millones de pesos)'].sum()\n",
+        "danos_economicos['Inundación']=inundacion_danos_econ\n",
+        "\n",
+        "ciclon_danos_econ = ciclon_tropical['Total de daños (millones de pesos)'].sum()\n",
+        "danos_economicos['Ciclón tropical']=ciclon_danos_econ\n",
+        "\n",
+        "#   5.4. Impacto socioeconómico\n",
+        "impacto_social = pd.Series(poblacion_afect).sort_values(ascending=False)\n",
+        "impacto_economico = pd.Series(danos_economicos).sort_values(ascending=False)"
+      ],
+      "id": "fb8b86f3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Sabías que...\n",
+        "\n",
+        "## Column {height=13%}\n",
+        "::: {.valuebox icon=\"exclamation-triangle-fill\" color=\"primary\"}\n",
+        "De 2020 a 2024 el estado de Veracruz fue impactado más de 300 veces por fenómenos meteorológicos y del mar, lo que equivale a al menos ¡10 desastres por año!\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox icon=\"tropical-storm\" color=\"primary\"}\n",
+        "Según el Atlas de Riesgos del estado de Veracruz, ¡la entidad ocupa el segundo lugar a nivel nacional en impactos por ciclones tropicales!\n",
+        ":::\n",
+        "\n",
+        "## Column {height=5%}"
+      ],
+      "id": "6339f3d3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "fig1=px.bar(num_tipo_fenomeno, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)"
+      ],
+      "id": "3d977033",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Conoce los fenómenos meteorológicos y del mar que afectaron a Veracruz durante 2020 - 2024"
+      },
+      "source": [
+        "fig1.update_layout(xaxis_title=\" \", yaxis_title=\"Número de eventos\", showlegend=False)"
+      ],
+      "id": "8077015d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {height=5%}"
+      ],
+      "id": "e3d99240"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "#| layout-ncol: 2\n",
+        "fig2=px.bar(impacto_social, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)\n",
+        "fig3=px.bar(impacto_economico, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)"
+      ],
+      "id": "80acaecd",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Conoce el impacto de fenómenos meteorológicos y del mar durante 2020 - 2024"
+      },
+      "source": [
+        "#| layout-ncol: 2\n",
+        "fig2.update_layout(xaxis_title=\" \", yaxis_title=\"Población afectada\", showlegend=False)\n",
+        "fig3.update_layout(xaxis_title=\" \", yaxis_title=\"Daños en millones de pesos\", showlegend=False)"
+      ],
+      "id": "7eb7c4bb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {height=10%}\n",
+        "::: {.valuebox icon=\"people-fill\" color=\"primary\"}\n",
+        "De acuerdo con INEGI, en el municipio de Veracruz viven más de 600,000 personas, es decir, ¡más de medio millón de personas expuestas a impactos por fenómenos meteorológicos y del mar!\n",
+        ":::\n",
+        "\n",
+        "## Column {height=5%}"
+      ],
+      "id": "76e2f0d4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "fig=px.bar(municipios_mas_poblados, x='NOM_MUN', y='POBTOT', color_discrete_sequence=['indianred'], text_auto=True)"
+      ],
+      "id": "e0bdb612",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Conoce los municipios más poblados del estado de Veracruz"
+      },
+      "source": [
+        "fig.update_layout(xaxis_title=\" \", yaxis_title=\"Población total\", xaxis_tickangle=45)"
+      ],
+      "id": "18c07026",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Pronósticos y condiciones actuales\n",
+        "\n",
+        "## Column {height=25%}"
+      ],
+      "id": "88a9fc9a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Temperatura [°C]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"thermometer-half\", \n",
+        "    color=\"light\",\n",
+        "    value=temperatura.iloc[-1]['Temperatura atmosferica'])"
+      ],
+      "id": "2870a265",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Humedad relativa %"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"droplet-half\", \n",
+        "    color=\"light\", \n",
+        "    value=humedad_rel.iloc[-1]['Humedad relativa'])"
+      ],
+      "id": "180f451b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Nivel del mar [metros]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"water\", \n",
+        "    color=\"light\", \n",
+        "    value=nivel_del_mar['Radar promedio'].dropna().iloc[-1])"
+      ],
+      "id": "2a75ddc3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "component": "valuebox",
+        "title": "Velocidad de rafaga [m/s]"
+      },
+      "source": [
+        "dict(\n",
+        "    icon=\"wind\", \n",
+        "    color=\"light\", \n",
+        "    value=velocidad_viento.iloc[-1]['Velocidad de rafaga'])"
+      ],
+      "id": "77a8b996",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {height=10%}"
+      ],
+      "id": "f7d3ff12"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figT=go.Figure()\n",
+        "figT.add_trace(go.Scatter(x=temperatura['Tiempo_datetime'], y=temperatura['Temperatura atmosferica'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "d1ce28be",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Temperatura"
+      },
+      "source": [
+        "figT.update_layout(xaxis_title=\" \", yaxis_title=\"[°C]\")"
+      ],
+      "id": "8423933f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figH=go.Figure()\n",
+        "figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'],\n",
+        "                         name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "0f138720",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Humedad relativa"
+      },
+      "source": [
+        "figH.update_layout(xaxis_title=\" \", yaxis_title=\"[%]\")"
+      ],
+      "id": "303eac68",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figM=go.Figure()\n",
+        "figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=2)))"
+      ],
+      "id": "7ed211f0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Pronostico'], name='Pronóstico', line=dict(color='blue',width=2)))"
+      ],
+      "id": "45850b2b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Nivel del Mar"
+      },
+      "source": [
+        "figM.update_layout(xaxis_title=\" \", yaxis_title=\"[metros]\")"
+      ],
+      "id": "8fb2da74",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "figV=go.Figure()\n",
+        "figV.add_trace(go.Scatter(x=velocidad_viento['Tiempo_datetime'], y=velocidad_viento['Velocidad de rafaga'],\n",
+        "                         name='Velocidad de rafaga', line=dict(color='green',width=2)))"
+      ],
+      "id": "35a050c8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Gráfica Velocidad de Ragafa"
+      },
+      "source": [
+        "figV.update_layout(xaxis_title=\" \", yaxis_title=\"[m/s]\")"
+      ],
+      "id": "cc2b1adc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Column {height=40%}\n",
+        "\n",
+        "### Row"
+      ],
+      "id": "cf6a8329"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "#| output: False\n",
+        "mapa=Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),\n",
+        "    center=(19.196974, -96.137838), zoom=7)\n",
+        "marcador=Marker(location=(19.196974, -96.137838), draggable=True)"
+      ],
+      "id": "3710445e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "title": "Mapa"
+      },
+      "source": [
+        "mapa.add(marcador)"
+      ],
+      "id": "a4970ba5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Row {width=30%}\n",
+        "\n",
+        "::: {.valuebox title=\"Alertamiento por tsunami\" icon=\"tsunami\" color=\"light\"}\n",
+        "Último boletin emitido por [SEMAR](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html)\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox title=\"Alertamiento por huracán\" icon=\"hurricane\" color=\"light\"}\n",
+        "Pronóstico emitido por el [Meteorológico Nacional](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general)\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Column {height=20%}\n",
+        "\n",
+        "### Row {width=25%}\n",
+        "::: {.valuebox icon=\"info-circle\" color=\"primary\"}\n",
+        "Fuentes de los datos\n",
+        ":::\n",
+        "\n",
+        "### Row\n",
+        "::: {.card title=\"Consulta: \"}\n",
+        "Valores de temperatura, humedad relativa, nivel del mar y velocidad de viento extráidos de la estación de Veracruz del [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1), UNAM\n",
+        ":::"
+      ],
+      "id": "9d3d270e"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "language": "python",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
