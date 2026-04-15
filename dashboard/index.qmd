@@ -36,6 +36,7 @@ nivel_del_mar['Tiempo_datetime']=pd.to_datetime(nivel_del_mar['Tiempo'], format=
 temperatura['Tiempo_datetime']=pd.to_datetime(temperatura['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 humedad_rel['Tiempo_datetime']=pd.to_datetime(humedad_rel['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')
+
 #==============
 # Semáforos de alerta
 #==============
@@ -44,7 +45,7 @@ temp_actual = float(temperatura.iloc[-1]['Temperatura atmosferica'])
 if temp_actual >=35:
     sem_temp = "Nivel de alerta: 🔴"
 elif temp_actual >=25:
-    sem_temp = "Nivel de alerta: 🟡"
+    sem_temp = "Alerta por temperatura: 🟡"
 else:
     sem_temp = "Nivel de alerta: 🟢"
 #nivel del mar
@@ -52,7 +53,7 @@ nivel_actual = float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 if nivel_actual > 2:
     sem_nivel_mar = "Nivel de alerta: 🔴"
 elif nivel_actual > 1:
-    sem_nivel_mar= "Nivel de alerta:🟡"
+    sem_nivel_mar= "Alerta por nivel del mar:🟡"
 else:
     sem_nivel_mar = "Nivel de alerta: 🟢"
 #tsunami
@@ -62,7 +63,7 @@ if estado_tsunami == "Alerta":
 elif estado_tsunami == "Precaución":
     sem_tsunami = "Nivel de alerta: 🟡"
 else:
-    sem_tsunami = "Nivel de alerta: 🟢"
+    sem_tsunami = "Nivel de alerta por tsunami: 🟢"
 #huracán
 estado_huracan = "Sin alerta"
 if estado_huracan == "Alerta":
@@ -70,7 +71,7 @@ if estado_huracan == "Alerta":
 elif estado_huracan == "Precaución":
     sem_huracan = "Nivel de alerta: 🟡"
 else:
-    sem_huracan = "Nivel de alerta: 🟢"
+    sem_huracan = "Nivel de alerta por huracán: 🟢"
 # 3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico
 valor_pronostico = nivel_del_mar.iloc[3580:]
 valor_medido = nivel_del_mar.iloc[0:3580]
@@ -176,26 +177,24 @@ fig.update_layout(xaxis_title=" ", yaxis_title="Población total", xaxis_tickang
 
 # Pronósticos y condiciones actuales
 
-## Column {height=25%}
+## Row {height=20%}
+
 ```` {python}
 #| component: valuebox
 #| title: Temperatura [°C]
 dict(
     icon="thermometer-half", 
-    color="light",
+    color="primary",
     value=float(temperatura.iloc[-1]['Temperatura atmosferica'])
 )
 ````
-```{python}
-#| echo: false
-print (sem_temp)
-```
+
 ```{python}
 #| component: valuebox
-#| title: Humedad relativa %
+#| title: Humedad relativa [%]
 dict(
     icon="droplet-half", 
-    color="light", 
+    color="primary", 
     value=float(humedad_rel.iloc[-1]['Humedad relativa'])
 )
 ```
@@ -205,48 +204,43 @@ dict(
 #| title: Nivel del mar [metros]
 dict(
     icon="water", 
-    color="light", 
+    color="primary", 
     value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 )
 ```
-```{python}
-#| echo: false
-print(sem_nivel_mar)
-```
+
 ```{python}
 #| component: valuebox
 #| title: Velocidad de rafaga [m/s]
 dict(
     icon="wind", 
-    color="light", 
+    color="primary", 
     value=float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
 )
 ```
 
-## Column {height=10%}
+## Row {height=8%}
 
+```{python}
+#| echo: false
+print(sem_temp)
+```
 ```{python}
 #| output: False
 figT=go.Figure()
-figT.add_trace(go.Scatter(x=temperatura['Tiempo_datetime'], y=temperatura['Temperatura atmosferica'],
-                         name='Medición', line=dict(color='green',width=2)))
+figT.add_trace(go.Scatter(x=temperatura['Tiempo_datetime'], y=temperatura['Temperatura atmosferica'], name='Medición', line=dict(color='green',width=2)))
 ```
 ```{python}
-#| title: Gráfica Temperatura
+#| title: Detalles temperatura
 figT.update_layout(xaxis_title=" ", yaxis_title="[°C]")
 ```
-
+### Column
 ```{python}
-#| output: False
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'],
-                         name='Medición', line=dict(color='green',width=2)))
-```
-```{python}
-#| title: Gráfica Humedad relativa
-figH.update_layout(xaxis_title=" ", yaxis_title="[%]")
+#| echo: false
+print(sem_nivel_mar)
 ```
 
+### Column
 ```{python}
 #| output: False
 figM=go.Figure()
@@ -257,34 +251,30 @@ figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['R
 figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Pronostico'], name='Pronóstico', line=dict(color='blue',width=2)))
 ```
 ```{python}
-#| title: Gráfica Nivel del Mar
+#| title: Detalles Nivel de Mar
 figM.update_layout(xaxis_title=" ", yaxis_title="[metros]")
 ```
 
-```{python}
-#| output: False
-figV=go.Figure()
-figV.add_trace(go.Scatter(x=velocidad_viento['Tiempo_datetime'], y=velocidad_viento['Velocidad de rafaga'],
-                         name='Velocidad de rafaga', line=dict(color='green',width=2)))
-```
-```{python}
-#| title: Gráfica Velocidad de Ragafa
-figV.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
-```
 
-## Column {height=40%}
+## Row {height=50%}
 
-### Row
-
-
+### Column
+::: {.card title="Pronóstico de marejada"}
 <div style="text-align:center;">
   <img src="marejada.gif" width="100%" style="border-radius:12px;">
 </div>
+:::
 
-
-
-### Row {width=30%}
-
+### Column 
+```{python}
+#| output: False
+figV=go.Figure()
+figV.add_trace(go.Scatter(x=velocidad_viento['Tiempo_datetime'], y=velocidad_viento['Velocidad de rafaga'], name='Velocidad de rafaga', line=dict(color='green',width=2)))
+```
+```{python}
+#| title: Detalles Viento
+figV.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
+```
 ::: {.valuebox title="Alertamiento por tsunami" icon="tsunami" color="light"}
 Último boletin emitido por [SEMAR](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html)
 :::
@@ -293,6 +283,16 @@ figV.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
 print(sem_tsunami)
 ```
 
+### Column
+```{python}
+#| output: False
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+```{python}
+#| title: Detalles Humedad
+figH.update_layout(xaxis_title=" ", yaxis_title="[%]")
+```
 ::: {.valuebox title="Alertamiento por huracán" icon="hurricane" color="light"}
 Pronóstico emitido por el [Meteorológico Nacional](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general)
 :::
@@ -300,14 +300,14 @@ Pronóstico emitido por el [Meteorológico Nacional](https://smn.conagua.gob.mx/
 #| echo: false
 print(sem_huracan)
 ```
-## Column {height=20%}
+### Column
+::: {.card title="Fuentes de los datos: "}
+1. [Servicio Mareográfico Nacional del Instituto de Geofísica UNAM](https://www.mareografico.unam.mx/)
 
-### Row {width=25%}
-::: {.valuebox icon="info-circle" color="primary"}
-Fuentes de los datos
-:::
+2. [Instituto de Ciencias de la Atmósfera y Cambio Climático UNAM](https://pronosticos.atmosfera.unam.mx/)
 
-### Row
-::: {.card title="Consulta: "}
-Valores de temperatura, humedad relativa, nivel del mar y velocidad de viento extráidos de la estación de Veracruz del [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1), UNAM
+
+3. [Instituto Nacional de Estadística y Geografía (INEGI)](https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos)
+
+4. [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
 :::
