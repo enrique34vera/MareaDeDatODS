@@ -127,7 +127,7 @@ impacto_economico = pd.Series(danos_economicos).sort_values(ascending=False)
 
 ## Column {height=13%}
 ::: {.valuebox icon="exclamation-triangle-fill" color="primary"}
-De 2020 a 2024 el estado de Veracruz fue impactado más de 300 veces por fenómenos meteorológicos y del mar, lo que equivale a al menos ¡10 desastres por año!
+De 2000 a 2024 el estado de Veracruz fue impactado más de 300 veces por fenómenos meteorológicos y del mar, lo que equivale a al menos ¡10 desastres por año!
 :::
 
 ::: {.valuebox icon="tropical-storm" color="primary"}
@@ -140,7 +140,7 @@ Según el Atlas de Riesgos del estado de Veracruz, ¡la entidad ocupa el segundo
 fig1=px.bar(num_tipo_fenomeno, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)
 ```
 ```{python}
-#| title: Conoce los fenómenos meteorológicos y del mar que afectaron a Veracruz durante 2020 - 2024
+#| title: Conoce los fenómenos meteorológicos y del mar que afectaron a Veracruz durante 2000 - 2024
 fig1.update_layout(xaxis_title=" ", yaxis_title="Número de eventos", showlegend=False)
 ```
 
@@ -152,7 +152,7 @@ fig2=px.bar(impacto_social, color_discrete_sequence=['rgb(26, 118, 255)'], text_
 fig3=px.bar(impacto_economico, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)
 ```
 ```{python}
-#| title: Conoce el impacto de fenómenos meteorológicos y del mar durante 2020 - 2024
+#| title: Conoce el impacto de fenómenos meteorológicos y del mar durante 2000 - 2024
 #| layout-ncol: 2
 fig2.update_layout(xaxis_title=" ", yaxis_title="Población afectada", showlegend=False)
 fig3.update_layout(xaxis_title=" ", yaxis_title="Daños en millones de pesos", showlegend=False)
