@@ -256,7 +256,7 @@ figM.update_layout(xaxis_title=" ", yaxis_title="[metros]")
 ```
 
 
-## Row {height=50%}
+## Row {height=55%}
 
 ### Column
 ::: {.card title="Pronóstico de marejada"}
