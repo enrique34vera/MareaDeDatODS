@@ -1,5 +1,5 @@
 ---
-title: InforMARte es cuidarte
+title: VERACRUZ:InforMARte es cuidarte
 author: Marea de DatODS
 format: 
     dashboard:
@@ -43,35 +43,110 @@ velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], f
 #temperatura
 temp_actual = float(temperatura.iloc[-1]['Temperatura atmosferica'])
 if temp_actual >=35:
-    sem_temp = "Nivel de alerta: 🔴"
+    sem_temp = "Alerta por temperatura: 🔴"
 elif temp_actual >=25:
     sem_temp = "Alerta por temperatura: 🟡"
 else:
-    sem_temp = "Nivel de alerta: 🟢"
+    sem_temp = "Alerta por temperatura: 🟢"
 #nivel del mar
 nivel_actual = float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 if nivel_actual > 2:
-    sem_nivel_mar = "Nivel de alerta: 🔴"
+    sem_nivel_mar = "Alerta por nivel del mar: 🔴"
 elif nivel_actual > 1:
     sem_nivel_mar= "Alerta por nivel del mar:🟡"
 else:
-    sem_nivel_mar = "Nivel de alerta: 🟢"
+    sem_nivel_mar = "Alerta por nivel del mar: 🟢"
 #tsunami
 estado_tsunami = "Sin alerta"
 if estado_tsunami == "Alerta":
-    sem_tsunami = "Nivel de alerta: 🔴"
+    sem_tsunami = "Alerta por tsunami: 🔴"
 elif estado_tsunami == "Precaución":
-    sem_tsunami = "Nivel de alerta: 🟡"
+    sem_tsunami = "Alerta por tsunami: 🟡"
 else:
-    sem_tsunami = "Nivel de alerta por tsunami: 🟢"
+    sem_tsunami = "Alerta por tsunami: 🟢"
 #huracán
 estado_huracan = "Sin alerta"
 if estado_huracan == "Alerta":
-    sem_huracan = "Nivel de alerta: 🔴"
+    sem_huracan = "Alerta por huracán: 🔴"
 elif estado_huracan == "Precaución":
-    sem_huracan = "Nivel de alerta: 🟡"
+    sem_huracan = "Alerta por huracán: 🟡"
 else:
-    sem_huracan = "Nivel de alerta por huracán: 🟢"
+    sem_huracan = "Alerta por huracán: 🟢"
+#velocidad de rafaga
+viento_actual = float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
+if viento_actual > 25:
+    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🔴"
+elif viento_actual > 17:
+    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🟡"
+else:
+    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🟢"
+#=============================
+#Semáforos de nuevas variables
+#=============================
+#valor 1
+valor1 = 10
+if valor1 > 30:
+    sem_1 = "Alerta por valor 1: 🔴"
+elif valor1 > 20:
+    sem_1 = "Alerta por valor 1: 🟡"
+else:
+    sem_1 = "Alerta por valor 1: 🟢"
+#valor 2
+valor2 = 10
+if valor2 > 30:
+    sem_2 = "Alerta por valor 2: 🔴"
+elif valor2 > 20:
+    sem_2 = "Alerta por valor 2: 🟡"
+else:
+    sem_2 = "Alerta por valor 2: 🟢"
+#valor 3
+valor3 = 10
+if valor3 > 30:
+    sem_3 = "Alerta por valor 3: 🔴"
+elif valor3 > 20:
+    sem_3 = "Alerta por valor 3: 🟡"
+else:
+    sem_3 = "Alerta por valor 3: 🟢"
+#valor 4
+valor4 = 10
+if valor4 > 30:
+    sem_4 = "Alerta por valor 4: 🔴"
+elif valor4 > 20:
+    sem_4 = "Alerta por valor 4: 🟡"
+else:
+    sem_4 = "Alerta por valor 4: 🟢"
+#valor 5
+valor5 = 10
+if valor5 > 30:
+    sem_5 = "Alerta por valor 5: 🔴"
+elif valor5 > 20:
+    sem_5 = "Alerta por valor 5: 🟡"
+else:
+    sem_5 = "Alerta por valor 5: 🟢"
+#valor 6
+valor6 = 10
+if valor6 > 30:
+    sem_6 = "Alerta por valor 6: 🔴"
+elif valor6 > 20:
+    sem_6 = "Alerta por valor 6: 🟡"
+else:
+    sem_6 = "Alerta por valor 6: 🟢"
+#valor 7
+valor7 = 10
+if valor7 > 30:
+    sem_7 = "Alerta por valor 7: 🔴"
+elif valor7 > 20:
+    sem_7 = "Alerta por valor 7: 🟡"
+else:
+    sem_7 = "Alerta por valor 7: 🟢"
+#valor 8
+valor8 = 10
+if valor8 > 30:
+    sem_8 = "Alerta por valor 8: 🔴"
+elif valor8 > 20:
+    sem_8 = "Alerta por valor 8: 🟡"
+else:
+    sem_8 = "Alerta por valor 8: 🟢"
 # 3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico
 valor_pronostico = nivel_del_mar.iloc[3580:]
 valor_medido = nivel_del_mar.iloc[0:3580]
@@ -176,9 +251,8 @@ fig.update_layout(xaxis_title=" ", yaxis_title="Población total", xaxis_tickang
 
 
 # Pronósticos y condiciones actuales
-
 ## Row {height=20%}
-
+### Column 
 ```` {python}
 #| component: valuebox
 #| title: Temperatura [°C]
@@ -188,7 +262,7 @@ dict(
     value=float(temperatura.iloc[-1]['Temperatura atmosferica'])
 )
 ````
-
+### Column 
 ```{python}
 #| component: valuebox
 #| title: Humedad relativa [%]
@@ -198,7 +272,7 @@ dict(
     value=float(humedad_rel.iloc[-1]['Humedad relativa'])
 )
 ```
-
+### Column 
 ```{python}
 #| component: valuebox
 #| title: Nivel del mar [metros]
@@ -208,7 +282,7 @@ dict(
     value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 )
 ```
-
+### Column 
 ```{python}
 #| component: valuebox
 #| title: Velocidad de rafaga [m/s]
@@ -220,7 +294,7 @@ dict(
 ```
 
 ## Row {height=8%}
-
+### Column 
 ```{python}
 #| echo: false
 print(sem_temp)
@@ -311,3 +385,191 @@ print(sem_huracan)
 
 4. [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
 :::
+
+# prueba
+## Row {height=20%}
+### Column
+```{python}
+#| component: valuebox
+#| title: Temperatura [°C]
+dict(
+    icon="thermometer-half", 
+    color="primary",
+    value=float(temperatura.iloc[-1]['Temperatura atmosferica'])
+)
+```
+### Column 
+```{python}
+#| component: valuebox
+#| title: Humedad relativa [%]
+dict(
+    icon="droplet-half", 
+    color="primary", 
+    value=float(humedad_rel.iloc[-1]['Humedad relativa'])
+)
+```
+### Column
+```{python}
+#| component: valuebox
+#| title: Nivel del mar [metros]
+dict(
+    icon="water", 
+    color="primary", 
+    value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
+)
+```
+### Column
+```{python}
+#| component: valuebox
+#| title: Velocidad de rafaga [m/s]
+dict(
+    icon="wind", 
+    color="primary", 
+    value=float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
+)
+```
+## Row {height=8%}
+### Column
+```{python}
+#| echo: false
+print(sem_temp)
+```
+### Column
+```{python}
+# espacio vacio (sin semáforo)
+print("")
+```
+### Column
+```{python}
+#| echo: false
+print(sem_nivel_mar)
+```
+### Column
+```{python}
+#| echo: false
+print(sem_velocidad_rafaga)
+```
+## Row {height=20%}
+### Column 
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column 
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+## Row {height=8%}
+### Column 
+```{python}
+#| echo: false
+print(sem_1)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_2)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_3)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_4)
+```
+## Row {height=20%}
+### Column 
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column 
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column 
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+### Column
+```{python}
+#| component: valuebox
+dict(
+    title="vacio",
+    value="---",
+    icon="circle",
+    color="primary"
+)
+```
+## Row {height=8%}
+### Column 
+```{python}
+#| echo: false
+print(sem_5)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_6)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_7)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_8)
+```
