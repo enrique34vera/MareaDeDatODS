@@ -107,46 +107,7 @@ elif marejada_actual > 20:
     sem_marejada = "Alerta por marejada: 🟡"
 else:
     sem_marejada = "Alerta por marejada: 🟢"
-#valor 4
-valor4 = 10
-if valor4 > 30:
-    sem_4 = "Alerta por valor 4: 🔴"
-elif valor4 > 20:
-    sem_4 = "Alerta por valor 4: 🟡"
-else:
-    sem_4 = "Alerta por valor 4: 🟢"
-#valor 5
-valor5 = 10
-if valor5 > 30:
-    sem_5 = "Alerta por valor 5: 🔴"
-elif valor5 > 20:
-    sem_5 = "Alerta por valor 5: 🟡"
-else:
-    sem_5 = "Alerta por valor 5: 🟢"
-#valor 6
-valor6 = 10
-if valor6 > 30:
-    sem_6 = "Alerta por valor 6: 🔴"
-elif valor6 > 20:
-    sem_6 = "Alerta por valor 6: 🟡"
-else:
-    sem_6 = "Alerta por valor 6: 🟢"
-#valor 7
-valor7 = 10
-if valor7 > 30:
-    sem_7 = "Alerta por valor 7: 🔴"
-elif valor7 > 20:
-    sem_7 = "Alerta por valor 7: 🟡"
-else:
-    sem_7 = "Alerta por valor 7: 🟢"
-#valor 8
-valor8 = 10
-if valor8 > 30:
-    sem_8 = "Alerta por valor 8: 🔴"
-elif valor8 > 20:
-    sem_8 = "Alerta por valor 8: 🟡"
-else:
-    sem_8 = "Alerta por valor 8: 🟢"
+
 # 3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico
 valor_pronostico = nivel_del_mar.iloc[3580:]
 valor_medido = nivel_del_mar.iloc[0:3580]
