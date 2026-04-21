@@ -72,41 +72,41 @@ elif estado_huracan == "Precaución":
     sem_huracan = "Alerta por huracán: 🟡"
 else:
     sem_huracan = "Alerta por huracán: 🟢"
-#velocidad de rafaga
+#viento
 viento_actual = float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
 if viento_actual > 25:
-    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🔴"
+    sem_viento = "Alerta por viento: 🔴"
 elif viento_actual > 17:
-    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🟡"
+    sem_viento = "Alerta por viento: 🟡"
 else:
-    sem_velocidad_rafaga = "Alerta por velocidad de rafaga: 🟢"
+    sem_viento = "Alerta por viento: 🟢"
 #=============================
 #Semáforos de nuevas variables
 #=============================
-#valor 1
-valor1 = 10
-if valor1 > 30:
-    sem_1 = "Alerta por valor 1: 🔴"
-elif valor1 > 20:
-    sem_1 = "Alerta por valor 1: 🟡"
+#lluvia
+lluvia_actual = 10
+if lluvia_actual > 30:
+    sem_lluvia = "Alerta por lluvia: 🔴"
+elif lluvia_actual > 20:
+    sem_lluvia = "Alerta por lluvia: 🟡"
 else:
-    sem_1 = "Alerta por valor 1: 🟢"
-#valor 2
-valor2 = 10
-if valor2 > 30:
-    sem_2 = "Alerta por valor 2: 🔴"
-elif valor2 > 20:
-    sem_2 = "Alerta por valor 2: 🟡"
+    sem_lluvia = "Alerta por lluvia: 🟢"
+#oleaje
+oleaje_actual = 10
+if oleaje_actual > 30:
+    sem_oleaje = "Alerta por oleaje: 🔴"
+elif oleaje_actual > 20:
+    sem_oleaje = "Alerta por oleaje: 🟡"
 else:
-    sem_2 = "Alerta por valor 2: 🟢"
-#valor 3
-valor3 = 10
-if valor3 > 30:
-    sem_3 = "Alerta por valor 3: 🔴"
-elif valor3 > 20:
-    sem_3 = "Alerta por valor 3: 🟡"
+    sem_oleaje = "Alerta por oleaje: 🟢"
+#marejada
+marejada_actual = 10
+if marejada_actual > 30:
+    sem_marejada = "Alerta por marejada: 🔴"
+elif marejada_actual > 20:
+    sem_marejada = "Alerta por marejada: 🟡"
 else:
-    sem_3 = "Alerta por valor 3: 🟢"
+    sem_marejada = "Alerta por marejada: 🟢"
 #valor 4
 valor4 = 10
 if valor4 > 30:
@@ -307,7 +307,7 @@ print(sem_nivel_mar)
 ### Column
 ```{python}
 #| echo: false
-print(sem_velocidad_rafaga)
+print(sem_viento)
 ```
 ### Column
 ```{python}
@@ -415,14 +415,56 @@ dict(
 ### Column 
 ```{python}
 #| component: valuebox
-#| title: Humedad relativa [%]
+#| title: Lluvia [mm/h]
 dict(
-    icon="droplet-half", 
+    icon="cloud-rain", 
     color="primary", 
-    value=float(humedad_rel.iloc[-1]['Humedad relativa'])
+    value="---"
 )
 ```
 ### Column
+```{python}
+#| component: valuebox
+#| title: Viento [m/s]
+dict(
+    icon="wind", 
+    color="primary", 
+    value=float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
+)
+```
+### Column
+```{python}
+#| component: valuebox
+#| title: Dirección de viento
+dict(
+    icon="compass", 
+    color="primary", 
+    value="---"
+)
+```
+## Row {height=8%}
+### Column
+```{python}
+#| echo: false
+print(sem_temp)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_lluvia)
+```
+### Column
+```{python}
+#| echo: false
+print(sem_viento)
+```
+### Column
+```{python}
+#| echo: false
+print("")
+```
+## Row {height=20%}
+### Column 
 ```{python}
 #| component: valuebox
 #| title: Nivel del mar [metros]
@@ -432,158 +474,112 @@ dict(
     value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 )
 ```
+### Column 
+```{python}
+#| component: valuebox
+#| title: Oleaje [metros]
+dict(
+    icon="broadcast", 
+    color="primary", 
+    value="---"
+)
+```
 ### Column
 ```{python}
 #| component: valuebox
-#| title: Velocidad de rafaga [m/s]
+#| title: Marejada [metros]
 dict(
-    icon="wind", 
+    icon="exclamation-triangle-fill", 
     color="primary", 
-    value=float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
+    value="---"
+)
+```
+### Column
+```{python}
+#| component: valuebox
+#| title: Humedad relativa [%]
+dict(
+    icon="droplet-half", 
+    color="primary", 
+    value=float(humedad_rel.iloc[-1]['Humedad relativa'])
 )
 ```
 ## Row {height=8%}
-### Column
-```{python}
-#| echo: false
-print(sem_temp)
-```
-### Column
-```{python}
-# espacio vacio (sin semáforo)
-print("")
-```
-### Column
+### Column 
 ```{python}
 #| echo: false
 print(sem_nivel_mar)
 ```
-### Column
+### Column 
 ```{python}
 #| echo: false
-print(sem_velocidad_rafaga)
+print(sem_oleaje)
+```
+### Column 
+```{python}
+#| echo: false
+print(sem_marejada)
+```
+### Column 
+```{python}
+#| echo: false
+print("")
 ```
 ## Row {height=20%}
 ### Column 
 ```{python}
 #| component: valuebox
+#| title: Alertamiento por tsunami
 dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
+    icon="tsunami", 
+    color="primary", 
+    value=""
 )
 ```
 ### Column 
 ```{python}
 #| component: valuebox
+#| title: Alertamiento por huracán
 dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
+    icon="hurricane", 
+    color="primary", 
+    value=""
 )
 ```
-### Column
+### Column 
 ```{python}
 #| component: valuebox
+#| title: Cambio climático
 dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
-)
-```
-### Column
-```{python}
-#| component: valuebox
-dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
+    icon="globe-americas-fill", 
+    color="primary", 
+    value="---"
 )
 ```
 ## Row {height=8%}
 ### Column 
 ```{python}
 #| echo: false
-print(sem_1)
+print(sem_tsunami)
 ```
 ### Column 
 ```{python}
 #| echo: false
-print(sem_2)
+print(sem_huracan)
 ```
 ### Column 
 ```{python}
 #| echo: false
-print(sem_3)
+print("")
 ```
-### Column 
-```{python}
-#| echo: false
-print(sem_4)
-```
-## Row {height=20%}
-### Column 
+
+## Row {height=10%}
 ```{python}
 #| component: valuebox
+#| title: FUENTES DE LOS DATOS
 dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
+    icon="info-circle", 
+    color="primary", 
+    value=""
 )
-```
-### Column 
-```{python}
-#| component: valuebox
-dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
-)
-```
-### Column 
-```{python}
-#| component: valuebox
-dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
-)
-```
-### Column
-```{python}
-#| component: valuebox
-dict(
-    title="vacio",
-    value="---",
-    icon="circle",
-    color="primary"
-)
-```
-## Row {height=8%}
-### Column 
-```{python}
-#| echo: false
-print(sem_5)
-```
-### Column 
-```{python}
-#| echo: false
-print(sem_6)
-```
-### Column 
-```{python}
-#| echo: false
-print(sem_7)
-```
-### Column 
-```{python}
-#| echo: false
-print(sem_8)
 ```
