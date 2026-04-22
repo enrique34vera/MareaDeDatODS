@@ -362,17 +362,18 @@ print(sem_huracan)
 :::
 
 # prueba
-## Row {height=20%}
+## Row {height=15%}
 ### Column
-```{python}
+```` {python}
 #| component: valuebox
-#| title: Temperatura [°C]
+#| title: "Temperatura [°C]"
 dict(
     icon="thermometer-half", 
     color="primary",
     value=float(temperatura.iloc[-1]['Temperatura atmosferica'])
 )
-```
+````
+
 ### Column 
 ```{python}
 #| component: valuebox
@@ -403,28 +404,70 @@ dict(
     value="---"
 )
 ```
-## Row {height=8%}
+
+## Row {height=3%}
+
+::: {.card title="Conoce más"}
+[¡Conoce los riesgos por altas temperaturas!](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf)
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
 ### Column
+::: {.card title="Conoce más"}
+[¿Qué tan fuerte va a llover?](https://x.com/conagua_clima/status/1017166937569161217)
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+### Column
+::: {.card title="Conoce más"}
+[¿Qué hago si hay vientos fuertes?](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893)
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+### Column
+::: {.card title="Conoce más"}
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+## Row {height=5%}
+
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_temp)
 ```
-### Column 
+:::
+
+
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_lluvia)
 ```
+:::
+
 ### Column
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_viento)
 ```
-### Column
-```{python}
-#| echo: false
-print("")
-```
-## Row {height=20%}
+:::
+
+
+## Row {height=15%}
 ### Column 
 ```{python}
 #| component: valuebox
@@ -465,49 +508,88 @@ dict(
     value=float(humedad_rel.iloc[-1]['Humedad relativa'])
 )
 ```
-## Row {height=8%}
-### Column 
+
+## Row {height=3%}
+
+::: {.card title="Conoce más"}
+
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+### Column
+::: {.card title="Conoce más"}
+[¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949)
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+### Column
+::: {.card title="Conoce más"}
+[¿Qué hago si hay marejadas?](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321)
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+### Column
+::: {.card title="Conoce más"}
+```{python}
+figH=go.Figure()
+figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+```
+:::
+
+
+## Row {height=5%}
+### Column
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_nivel_mar)
 ```
-### Column 
+:::
+### Column
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_oleaje)
 ```
-### Column 
+:::
+### Column
+::: {.card expandable="false"}
 ```{python}
 #| echo: false
 print(sem_marejada)
 ```
-### Column 
+:::
+
+
+## Row {height=15%}
+### Column
+::: {.valuebox icon="tsunami" color="light"}
 ```{python}
 #| echo: false
-print("")
+print(sem_tsunami)
 ```
-## Row {height=20%}
-### Column 
+:::
+
+### Column
+::: {.valuebox icon="hurricane" color="light"}
 ```{python}
-#| component: valuebox
-#| title: Alertamiento por tsunami
-dict(
-    icon="tsunami", 
-    color="primary", 
-    value=""
-)
+#| echo: false
+print(sem_huracan)
 ```
-### Column 
-```{python}
-#| component: valuebox
-#| title: Alertamiento por huracán
-dict(
-    icon="hurricane", 
-    color="primary", 
-    value=""
-)
-```
-### Column 
+:::
+
+
+# Fuentes de los datos
+## Row {height=50%} 
 ```{python}
 #| component: valuebox
 #| title: Cambio climático
@@ -517,24 +599,7 @@ dict(
     value="---"
 )
 ```
-## Row {height=8%}
-### Column 
-```{python}
-#| echo: false
-print(sem_tsunami)
-```
-### Column 
-```{python}
-#| echo: false
-print(sem_huracan)
-```
-### Column 
-```{python}
-#| echo: false
-print("")
-```
-
-## Row {height=10%}
+## Row {height=50%}
 ```{python}
 #| component: valuebox
 #| title: FUENTES DE LOS DATOS
