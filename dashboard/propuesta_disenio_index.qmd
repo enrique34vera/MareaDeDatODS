@@ -1,5 +1,5 @@
 ---
-title: VERACRUZ:InforMARte es cuidarte
+title: InforMARte es cuidarte (VERACRUZ)
 author: Marea de DatODS
 format: 
     dashboard:
@@ -20,6 +20,8 @@ nivel_del_mar = pd.read_csv("../datos/data-1_metros.csv")
 temperatura = pd.read_csv("../datos/data-1_gradoscelsius.csv")
 humedad_rel = pd.read_csv("../datos/data-1_porcentaje.csv")
 velocidad_viento = pd.read_csv("../datos/data-1_metrosxsegundo.csv")
+direccion_viento = pd.read_csv("../datos/data-1_grados.csv")
+pronostico_meteorologia = pd.read_csv('../datos/meteorologia_veracruz_2026-04-20.csv')
 poblacion_Veracruz = pd.read_csv('../datos/conjunto_de_datos_iter_30CSV20.csv', usecols=[3,5,9])
 impacto_Nacional=pd.read_excel('../datos/Basehistorica_2000_a_2024.xlsx', usecols=[0,1,2,3,4,5,6,8,9,15])
 ```
@@ -36,6 +38,20 @@ nivel_del_mar['Tiempo_datetime']=pd.to_datetime(nivel_del_mar['Tiempo'], format=
 temperatura['Tiempo_datetime']=pd.to_datetime(temperatura['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 humedad_rel['Tiempo_datetime']=pd.to_datetime(humedad_rel['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')
+direccion_viento['Tiempo_datetime']=pd.to_datetime(direccion_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')
+pronostico_meteorologia['Tiempo_datetime'] = pd.to_datetime(pronostico_meteorologia['date']+" "+pronostico_meteorologia['time'], 
+                                                       format='%Y-%m-%d %H:%M:%S')
+
+# 3.1 Transformación de hora UTC a hora local de los datos medidos
+nivel_del_mar['Tiempo_local'] = nivel_del_mar['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
+temperatura['Tiempo_local'] = temperatura['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
+humedad_rel['Tiempo_local'] = humedad_rel['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
+velocidad_viento['Tiempo_local'] = velocidad_viento['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
+direccion_viento['Tiempo_local'] = direccion_viento['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
+
+
+# 3.2 Se transforma la velocidad del viento del pronostico de km/h a m/s
+pronostico_meteorologia['wind_speed_ms'] = (1000/3600) * pronostico_meteorologia['wind_speed_kmh']
 
 #==============
 # Semáforos de alerta
@@ -48,6 +64,7 @@ elif temp_actual >=25:
     sem_temp = "Alerta por temperatura: 🟡"
 else:
     sem_temp = "Alerta por temperatura: 🟢"
+
 #nivel del mar
 nivel_actual = float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
 if nivel_actual > 2:
@@ -56,6 +73,7 @@ elif nivel_actual > 1:
     sem_nivel_mar= "Alerta por nivel del mar:🟡"
 else:
     sem_nivel_mar = "Alerta por nivel del mar: 🟢"
+
 #tsunami
 estado_tsunami = "Sin alerta"
 if estado_tsunami == "Alerta":
@@ -72,6 +90,7 @@ elif estado_huracan == "Precaución":
     sem_huracan = "Alerta por huracán: 🟡"
 else:
     sem_huracan = "Alerta por huracán: 🟢"
+
 #viento
 viento_actual = float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
 if viento_actual > 25:
@@ -80,9 +99,7 @@ elif viento_actual > 17:
     sem_viento = "Alerta por viento: 🟡"
 else:
     sem_viento = "Alerta por viento: 🟢"
-#=============================
-#Semáforos de nuevas variables
-#=============================
+
 #lluvia
 lluvia_actual = 10
 if lluvia_actual > 30:
@@ -91,6 +108,7 @@ elif lluvia_actual > 20:
     sem_lluvia = "Alerta por lluvia: 🟡"
 else:
     sem_lluvia = "Alerta por lluvia: 🟢"
+
 #oleaje
 oleaje_actual = 10
 if oleaje_actual > 30:
@@ -99,6 +117,7 @@ elif oleaje_actual > 20:
     sem_oleaje = "Alerta por oleaje: 🟡"
 else:
     sem_oleaje = "Alerta por oleaje: 🟢"
+
 #marejada
 marejada_actual = 10
 if marejada_actual > 30:
@@ -108,9 +127,6 @@ elif marejada_actual > 20:
 else:
     sem_marejada = "Alerta por marejada: 🟢"
 
-# 3. Recorte de los datos de nivel del mar para mostrar mediciones y pronostico
-valor_pronostico = nivel_del_mar.iloc[3580:]
-valor_medido = nivel_del_mar.iloc[0:3580]
 
 #  4. Filtrado de datos de población de INEGI
 poblacionXmunicipio = poblacion_Veracruz.loc[poblacion_Veracruz['NOM_LOC']=='Total del Municipio']
@@ -170,17 +186,20 @@ De 2000 a 2024 el estado de Veracruz fue impactado más de 300 veces por fenóme
 Según el Atlas de Riesgos del estado de Veracruz, ¡la entidad ocupa el segundo lugar a nivel nacional en impactos por ciclones tropicales!
 :::
 
-## Column {height=5%}
+## Column {height=3%}
+::: {.card title="Conoce los fenómenos meteorológicos y del mar que afectaron a Veracruz durante 2000 - 2024"}
 ```{python}
 #| output: False
 fig1=px.bar(num_tipo_fenomeno, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)
 ```
 ```{python}
-#| title: Conoce los fenómenos meteorológicos y del mar que afectaron a Veracruz durante 2000 - 2024
 fig1.update_layout(xaxis_title=" ", yaxis_title="Número de eventos", showlegend=False)
 ```
+Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
+:::
 
-## Column {height=5%}
+## Column {height=3%}
+::: {.card title="Conoce el impacto de fenómenos meteorológicos y del mar durante 2000 - 2024"}
 ```{python}
 #| output: False
 #| layout-ncol: 2
@@ -188,11 +207,12 @@ fig2=px.bar(impacto_social, color_discrete_sequence=['rgb(26, 118, 255)'], text_
 fig3=px.bar(impacto_economico, color_discrete_sequence=['rgb(26, 118, 255)'], text_auto=True)
 ```
 ```{python}
-#| title: Conoce el impacto de fenómenos meteorológicos y del mar durante 2000 - 2024
 #| layout-ncol: 2
 fig2.update_layout(xaxis_title=" ", yaxis_title="Población afectada", showlegend=False)
 fig3.update_layout(xaxis_title=" ", yaxis_title="Daños en millones de pesos", showlegend=False)
 ```
+Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
+:::
 
 
 ## Column {height=10%}
@@ -200,169 +220,21 @@ fig3.update_layout(xaxis_title=" ", yaxis_title="Daños en millones de pesos", s
 De acuerdo con INEGI, en el municipio de Veracruz viven más de 600,000 personas, es decir, ¡más de medio millón de personas expuestas a impactos por fenómenos meteorológicos y del mar!
 :::
 
-## Column {height=5%}
+## Column {height=3%}
+::: {.card title="Conoce los municipios más poblados del estado de Veracruz"}
 ```{python}
 #| output: False
 fig=px.bar(municipios_mas_poblados, x='NOM_MUN', y='POBTOT', color_discrete_sequence=['indianred'], text_auto=True)
 ```
 ```{python}
-#| title: Conoce los municipios más poblados del estado de Veracruz
 fig.update_layout(xaxis_title=" ", yaxis_title="Población total", xaxis_tickangle=45)
 ```
+Fuente de los datos: [Instituto Nacional de Estadística y Geografía (INEGI)](https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos)
+:::
 
 
 # Pronósticos y condiciones actuales
 ## Row {height=15%}
-### Column 
-```` {python}
-#| component: valuebox
-#| title: "Temperatura [°C]"
-dict(
-    icon="thermometer-half", 
-    color="primary",
-    value=float(temperatura.iloc[-1]['Temperatura atmosferica'])
-)
-````
-### Column 
-```{python}
-#| component: valuebox
-#| title: "Humedad [%]"
-dict(
-    icon="droplet-half", 
-    color="primary", 
-    value=float(humedad_rel.iloc[-1]['Humedad relativa'])
-)
-```
-### Column 
-```{python}
-#| component: valuebox
-#| title: "Nivel del mar [m]"
-dict(
-    icon="water", 
-    color="primary", 
-    value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
-)
-```
-### Column 
-```{python}
-#| component: valuebox
-#| title: "Ráfaga [m/s]"
-dict(
-    icon="wind", 
-    color="primary", 
-    value=float(velocidad_viento.iloc[-1]['Velocidad de rafaga'])
-)
-```
-
-## Row {height=5%}
-### Column 
-```{python}
-#| echo: false
-print(sem_temp)
-```
-### Column
-```{python}
-#| echo: false
-print(sem_nivel_mar)
-```
-### Column
-```{python}
-#| echo: false
-print(sem_viento)
-```
-### Column
-```{python}
-#| echo: false
-# semáforo de humedad (sin umbral definido aún)
-print("Alerta por humedad: 🟢")
-```
-
-## Row {height=20%}
-### Column
-```{python}
-#| output: False
-figT=go.Figure()
-figT.add_trace(go.Scatter(x=temperatura['Tiempo_datetime'], y=temperatura['Temperatura atmosferica'], name='Medición', line=dict(color='green',width=2)))
-```
-```{python}
-#| title: Detalles temperatura
-figT.update_layout(xaxis_title=" ", yaxis_title="[°C]", margin=dict(l=40,r=10,t=18,b=25), legend=dict(orientation="h", y=1.15, x=0))
-```
-### Column
-```{python}
-#| output: False
-figM=go.Figure()
-figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=2)))
-```
-```{python}
-#| output: False
-figM.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Pronostico'], name='Pronóstico', line=dict(color='blue',width=2)))
-```
-```{python}
-#| title: Detalles Nivel de Mar
-figM.update_layout(xaxis_title=" ", yaxis_title="[m]", margin=dict(l=40,r=10,t=18,b=25), legend=dict(orientation="h", y=1.15, x=0))
-```
-### Column
-### Column
-
-## Row {height=60%}
-
-### Column
-::: {.card title="Pronóstico de marejada"}
-<div style="text-align:center;">
-  <img src="marejada.gif" width="100%" style="border-radius:12px;">
-</div>
-:::
-
-### Column 
-```{python}
-#| output: False
-figV=go.Figure()
-figV.add_trace(go.Scatter(x=velocidad_viento['Tiempo_datetime'], y=velocidad_viento['Velocidad de rafaga'], name='Velocidad de rafaga', line=dict(color='green',width=2)))
-```
-```{python}
-#| title: Detalles Viento
-figV.update_layout(xaxis_title=" ", yaxis_title="[m/s]", margin=dict(l=40,r=10,t=18,b=25))
-```
-::: {.valuebox title="Alertamiento por tsunami" icon="tsunami" color="light"}
-Último boletin emitido por [SEMAR](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html)
-:::
-```{python}
-#| echo: false
-print(sem_tsunami)
-```
-
-### Column
-```{python}
-#| output: False
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
-```
-```{python}
-#| title: Detalles Humedad
-figH.update_layout(xaxis_title=" ", yaxis_title="[%]", margin=dict(l=40,r=10,t=18,b=25))
-```
-::: {.valuebox title="Alertamiento por huracán" icon="hurricane" color="light"}
-Pronóstico emitido por el [Meteorológico Nacional](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general)
-:::
-```{python}
-#| echo: false
-print(sem_huracan)
-```
-### Column
-::: {.card title="Fuentes de los datos: "}
-1. [Servicio Mareográfico Nacional del Instituto de Geofísica UNAM](https://www.mareografico.unam.mx/)
-
-2. [Instituto de Ciencias de la Atmósfera y Cambio Climático UNAM](https://pronosticos.atmosfera.unam.mx/)
-
-
-3. [Instituto Nacional de Estadística y Geografía (INEGI)](https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos)
-
-4. [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
-:::
-
-# prueba
-## Row {height=15%}
 ### Column
 ```` {python}
 #| component: valuebox
@@ -377,11 +249,11 @@ dict(
 ### Column 
 ```{python}
 #| component: valuebox
-#| title: Lluvia [mm/h]
+#| title: Lluvia [mm]
 dict(
     icon="cloud-rain", 
     color="primary", 
-    value="---"
+    value=round(pronostico_meteorologia['hourly_precip_mm'][62], 2)
 )
 ```
 ### Column
@@ -397,11 +269,11 @@ dict(
 ### Column
 ```{python}
 #| component: valuebox
-#| title: Dirección de viento
+#| title: Dirección de viento [°]
 dict(
     icon="compass", 
     color="primary", 
-    value="---"
+    value=round(float(direccion_viento.iloc[-1]['Direccion de rafaga']),1)
 )
 ```
 
@@ -410,35 +282,63 @@ dict(
 ::: {.card title="Conoce más"}
 [¡Conoce los riesgos por altas temperaturas!](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf)
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=temperatura['Tiempo_local'], y=temperatura['Temperatura atmosferica'], name='Medición', line=dict(color='green',width=3)))
+fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronostico_meteorologia['temperature_C'], 
+                name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[°C]")
+```
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
 [¿Qué tan fuerte va a llover?](https://x.com/conagua_clima/status/1017166937569161217)
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronostico_meteorologia['hourly_precip_mm'], 
+                name='Medición', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[mm]")
+```
+Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/)
+
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
 [¿Qué hago si hay vientos fuertes?](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893)
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=velocidad_viento['Tiempo_local'], y=velocidad_viento['Rapidez de viento'], name='Medición', line=dict(color='green',width=3)))
+fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronostico_meteorologia['wind_speed_ms'], 
+                name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
+```
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=direccion_viento['Tiempo_local'], y=direccion_viento['Direccion de rafaga'], name='Medición', line=dict(color='green',width=3)))
+fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronostico_meteorologia['wind_direction_deg'], 
+                name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[°]")
+```
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
 :::
 
 ## Row {height=5%}
@@ -475,7 +375,7 @@ print(sem_viento)
 dict(
     icon="water", 
     color="primary", 
-    value=float(nivel_del_mar['Radar promedio'].dropna().iloc[-1])
+    value=round(float(nivel_del_mar['Radar promedio'].dropna().iloc[-1]),1)
 )
 ```
 ### Column 
@@ -483,7 +383,7 @@ dict(
 #| component: valuebox
 #| title: Oleaje [metros]
 dict(
-    icon="broadcast", 
+    icon="tsunami", 
     color="primary", 
     value="---"
 )
@@ -493,7 +393,7 @@ dict(
 #| component: valuebox
 #| title: Marejada [metros]
 dict(
-    icon="exclamation-triangle-fill", 
+    icon="exclamation-diamond-fill", 
     color="primary", 
     value="---"
 )
@@ -512,19 +412,25 @@ dict(
 ## Row {height=3%}
 
 ::: {.card title="Conoce más"}
-
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_local'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=3)))
+fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_local'], y=nivel_del_mar['Pronostico'], 
+                name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
+```
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1)
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
 [¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949)
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=2)))
 ```
 :::
 
@@ -540,9 +446,16 @@ figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humed
 ### Column
 ::: {.card title="Conoce más"}
 ```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
+#| output: False
+fig=go.Figure()
+fig.add_trace(go.Scatter(x=humedad_rel['Tiempo_local'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=3)))
+fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronostico_meteorologia['relative_humidity_pct'], 
+                name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[%]")
+```
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
 :::
 
 
@@ -573,6 +486,7 @@ print(sem_marejada)
 ## Row {height=15%}
 ### Column
 ::: {.valuebox icon="tsunami" color="light"}
+[Consulta el último boletín del Centro de Alerta de Tsunamis](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html)
 ```{python}
 #| echo: false
 print(sem_tsunami)
@@ -581,31 +495,10 @@ print(sem_tsunami)
 
 ### Column
 ::: {.valuebox icon="hurricane" color="light"}
+[Consulta el pronóstico del Servicio Meteorológico](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general)
 ```{python}
 #| echo: false
 print(sem_huracan)
 ```
 :::
 
-
-# Fuentes de los datos
-## Row {height=50%} 
-```{python}
-#| component: valuebox
-#| title: Cambio climático
-dict(
-    icon="globe-americas-fill", 
-    color="primary", 
-    value="---"
-)
-```
-## Row {height=50%}
-```{python}
-#| component: valuebox
-#| title: FUENTES DE LOS DATOS
-dict(
-    icon="info-circle", 
-    color="primary", 
-    value=""
-)
-```
