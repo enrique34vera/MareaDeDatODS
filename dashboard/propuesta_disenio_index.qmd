@@ -494,6 +494,17 @@ print(sem_tsunami)
 :::
 
 ### Column
+#### Row
+:::{.card expandable="False"}
+[¿Qué hago en caso de tsunami?](https://diredimoat.semar.gob.mx/cat/Archivos/Medidas.pdf){target="_blank"}
+:::
+
+#### Row
+:::{.card expandable="False"}
+[¿Qué hago en caso de huracán?](https://www.gob.mx/cms/uploads/attachment/file/926668/Infografi_as_-_Huracanes.pdf){target="_blank"}
+:::
+
+### Column
 ::: {.valuebox icon="hurricane" color="light"}
 [Consulta el pronóstico del Servicio Meteorológico](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general){target="_blank"}
 ```{python}
