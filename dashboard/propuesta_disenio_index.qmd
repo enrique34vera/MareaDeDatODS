@@ -195,7 +195,7 @@ fig1=px.bar(num_tipo_fenomeno, color_discrete_sequence=['rgb(26, 118, 255)'], te
 ```{python}
 fig1.update_layout(xaxis_title=" ", yaxis_title="Número de eventos", showlegend=False)
 ```
-Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
+Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html){target="_blank"}
 :::
 
 ## Column {height=3%}
@@ -211,7 +211,7 @@ fig3=px.bar(impacto_economico, color_discrete_sequence=['rgb(26, 118, 255)'], te
 fig2.update_layout(xaxis_title=" ", yaxis_title="Población afectada", showlegend=False)
 fig3.update_layout(xaxis_title=" ", yaxis_title="Daños en millones de pesos", showlegend=False)
 ```
-Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html)
+Fuente de los datos: [Atlas Nacional de Riesgos](http://www.atlasnacionalderiesgos.gob.mx/archivo/descargas.html){target="_blank"}
 :::
 
 
@@ -229,12 +229,12 @@ fig=px.bar(municipios_mas_poblados, x='NOM_MUN', y='POBTOT', color_discrete_sequ
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="Población total", xaxis_tickangle=45)
 ```
-Fuente de los datos: [Instituto Nacional de Estadística y Geografía (INEGI)](https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos)
+Fuente de los datos: [Instituto Nacional de Estadística y Geografía (INEGI)](https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos){target="_blank"}
 :::
 
 
 # Pronósticos y condiciones actuales
-## Row {height=15%}
+## Row {height=20%}
 ### Column
 ```` {python}
 #| component: valuebox
@@ -253,7 +253,7 @@ dict(
 dict(
     icon="cloud-rain", 
     color="primary", 
-    value=round(pronostico_meteorologia['hourly_precip_mm'][62], 2)
+    value=round(float(pronostico_meteorologia['hourly_precip_mm'][62]), 2)
 )
 ```
 ### Column
@@ -269,7 +269,7 @@ dict(
 ### Column
 ```{python}
 #| component: valuebox
-#| title: Dirección de viento [°]
+#| title: Dirección viento [°]
 dict(
     icon="compass", 
     color="primary", 
@@ -277,10 +277,10 @@ dict(
 )
 ```
 
-## Row {height=3%}
+## Row {height=2%}
 
 ::: {.card title="Conoce más"}
-[¡Conoce los riesgos por altas temperaturas!](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf)
+[¡Conoce los riesgos por altas temperaturas!](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf){target="_blank"}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -291,12 +291,12 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[°C]")
 ```
-Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué tan fuerte va a llover?](https://x.com/conagua_clima/status/1017166937569161217)
+[¿Qué tan fuerte va a llover?](https://x.com/conagua_clima/status/1017166937569161217){target="_blank"}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -306,13 +306,13 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[mm]")
 ```
-Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/)
+Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"}
 
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué hago si hay vientos fuertes?](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893)
+[¿Qué hago si hay vientos fuertes?](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893){target="_blank"}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -323,7 +323,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
 ```
-Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
 
 ### Column
@@ -338,7 +338,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[°]")
 ```
-Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
 
 ## Row {height=5%}
@@ -367,11 +367,11 @@ print(sem_viento)
 :::
 
 
-## Row {height=15%}
+## Row {height=20%}
 ### Column 
 ```{python}
 #| component: valuebox
-#| title: Nivel del mar [metros]
+#| title: Nivel mar [metros]
 dict(
     icon="water", 
     color="primary", 
@@ -401,7 +401,7 @@ dict(
 ### Column
 ```{python}
 #| component: valuebox
-#| title: Humedad relativa [%]
+#| title: Humedad [%]
 dict(
     icon="droplet-half", 
     color="primary", 
@@ -409,7 +409,7 @@ dict(
 )
 ```
 
-## Row {height=3%}
+## Row {height=2%}
 
 ::: {.card title="Conoce más"}
 ```{python}
@@ -422,12 +422,12 @@ fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_local'], y=nivel_del_mar['Prono
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
 ```
-Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1)
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"}
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
-[¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949)
+[¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949){target="_blank"}
 ```{python}
 fig=go.Figure()
 fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=2)))
@@ -436,7 +436,7 @@ fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Ra
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué hago si hay marejadas?](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321)
+[¿Qué hago si hay marejadas?](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321){target="_blank"}
 ```{python}
 figH=go.Figure()
 figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
@@ -455,7 +455,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
 ```{python}
 fig.update_layout(xaxis_title=" ", yaxis_title="[%]")
 ```
-Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1) (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/) (datos pronóstico)
+Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
 
 
@@ -483,10 +483,10 @@ print(sem_marejada)
 :::
 
 
-## Row {height=15%}
+## Row {height=20%}
 ### Column
 ::: {.valuebox icon="tsunami" color="light"}
-[Consulta el último boletín del Centro de Alerta de Tsunamis](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html)
+[Consulta el último boletín del Centro de Alerta de Tsunamis](https://diredimoat.semar.gob.mx/cat/centroAlertasTsunamis.html){target="_blank"}
 ```{python}
 #| echo: false
 print(sem_tsunami)
@@ -495,7 +495,7 @@ print(sem_tsunami)
 
 ### Column
 ::: {.valuebox icon="hurricane" color="light"}
-[Consulta el pronóstico del Servicio Meteorológico](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general)
+[Consulta el pronóstico del Servicio Meteorológico](https://smn.conagua.gob.mx/es/pronosticos/pronosticossubmenu/pronostico-meteorologico-general){target="_blank"}
 ```{python}
 #| echo: false
 print(sem_huracan)
