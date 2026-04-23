@@ -41,7 +41,7 @@ Servicio Mareográfico Nacional del Instituto de Geofísica UNAM: https://www.ma
 
 Instituto de Ciencias de la Atmósfera y Cambio Climático UNAM:
 
-&#x09;https://pronosticos.atmosfera.unam.mx/
+&#x09;https://pronosticos.atmosfera.unam.mx/, https://pronosticos.atmosfera.unam.mx/operativo/index.php
 
 Instituto Nacional de Estadística y Geografía (INEGI): https://www.inegi.org.mx/programas/ccpv/2020/#datos\_abiertos
 
@@ -92,7 +92,7 @@ Metadatos de los datos:
 Nombre del archivo: data-1\_metros.csv
 
 * Fuente: Servicio Mareográfico Nacional, UNAM (https://www.mareografico.unam.mx/estaciones/?estacion=1)
-* Fecha de descarga: 27 - 03 - 2026
+* Fecha de descarga: 22 - 04 - 2026
 * Descripción: datos de pronóstico y medición de nivel del mar en metros de la estación mareográfica de Veracruz. Los datos medidos se obtienen de dos instrumentos: flotador y radar.
 
 Variables:
@@ -108,7 +108,7 @@ Variables:
 Nombre del archivo: data-1\_gradoscelsius.csv
 
 * Fuente: Servicio Mareográfico Nacional, UNAM (https://www.mareografico.unam.mx/estaciones/?estacion=1)
-* Fecha de descarga: 27 - 03 - 2026
+* Fecha de descarga: 22 - 04 - 2026
 * Descripción: datos de temperatura en grados celsius medidos en la estación mareográfica de Veracruz.
 
 Variables:
@@ -123,7 +123,7 @@ Variables:
 Nombre del archivo: data-1\_porcentaje.csv
 
 * Fuente: Servicio Mareográfico Nacional, UNAM (https://www.mareografico.unam.mx/estaciones/?estacion=1)
-* Fecha de descarga: 27 - 03 - 2026
+* Fecha de descarga: 22 - 04 - 2026
 * Descripción: datos de humedad relativa medidos en porcentaje en la estación mareográfica de Veracruz.
 
 Variables:
@@ -137,7 +137,7 @@ Variables:
 Nombre del archivo: data-1\_metrosxsegundo.csv
 
 * Fuente: Servicio Mareográfico Nacional, UNAM (https://www.mareografico.unam.mx/estaciones/?estacion=1)
-* Fecha de descarga: 27 - 03 - 2026
+* Fecha de descarga: 22 - 04 - 2026
 * Descripción: datos del viento medidos en \[m/s] en la estación mareográfica de Veracruz.
 
 Variables:
@@ -145,6 +145,40 @@ Variables:
 * Tiempo: fecha y hora UTC de la medición
 * Velocidad de ráfaga: valor de la velocidad de las rafagas de viento (valor de viento sostenido por 3 segundos o más)
 * Licencia: Sin Licencia
+
+
+
+Nombre del archivo: data-1\_grados.csv
+
+* Fuente: Servicio Mareográfico Nacional, UNAM (https://www.mareografico.unam.mx/estaciones/?estacion=1)
+* Fecha de descarga: 22 - 04 - 2026
+* Descripción: datos de la dirección del viento en grados medidos en la estación mareográfica de Veracruz.
+
+Variables:
+
+* Tiempo: fecha y hora UTC de la medición
+* Dirección de ráfaga: valor de la dirección de las rafagas de viento (valor de viento sostenido por 3 segundos o más)
+* Licencia: Sin Licencia
+
+
+
+Nombre del archivo: meteorologia\_veracruz\_2026-04-20.csv 
+
+* Fuente: Instituto de Ciencias de la Atmósfera y Cambio Climático, UNAM (https://pronosticos.atmosfera.unam.mx/operativo/index.php)
+* Fecha de descarga: 20 - 04 - 2026
+* Descripción: datos de pronóstico de variables meteorológicas
+
+Variables:
+
+* date: fecha del dato
+* time: hora local de dato
+* temperature\_C: valores de pronóstico de temperatura en grados Celsius
+* pressure\_hPa: valores de pronóstico de presión atmosférica en hecta Pascales
+* wind\_direction\_deg: valores de pronóstico de dirección de viento en grados
+* wind\_speed\_kmh: valores de pronóstico de velocidad de viento en kilómetros por hora
+* relative\_humidity\_pct: valores de pronóstico de humedad relativa en porcentaje \[%]
+* hourly\_precip\_mm: valores de pronóstico de precipitación en milímetros  
+* Licencia: sin licencia
 
 
 
