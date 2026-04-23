@@ -405,7 +405,7 @@ dict(
 dict(
     icon="droplet-half", 
     color="primary", 
-    value=float(humedad_rel.iloc[-1]['Humedad relativa'])
+    value=f"{float(humedad_rel.iloc[-1]['Humedad relativa']):.1f}%"
 )
 ```
 
