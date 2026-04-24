@@ -428,24 +428,24 @@ Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.
 ### Column
 ::: {.card title="Conoce más"}
 [¡**Cuidado con el oleaje alto!**](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949){target="_blank" .link-alerta}
-```{python}
-#| output: False
-fig=go.Figure()
-fig.add_trace(go.Scatter(x=pronostico_oleaje['Tiempo_datetime'], y=pronostico_oleaje['hs_interpolado'], name='Pronóstico', line=dict(color='blue',width=3)))
-```
-```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
-```
-[Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} 
+
+<div style="text-align:center; height:100%; display:flex; align-items:center; justify-content:center;">
+  <img src="oleaje.gif" width="100%" style="border-radius:12px; max-height:100%; object-fit:contain;">
+</div>
+
+
+Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} 
 :::
 
 ### Column
 ::: {.card title="Conoce más"}
 [**¿Qué hago si hay marejadas?**](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321){target="_blank" .link-alerta}
-```{python}
-figH=go.Figure()
-figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
-```
+
+<div style="text-align:center; height:100%; display:flex; align-items:center; justify-content:center;">
+  <img src="marejada.gif" width="100%" style="border-radius:12px; max-height:100%; object-fit:contain;">
+</div>
+
+Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} 
 :::
 
 ### Column
