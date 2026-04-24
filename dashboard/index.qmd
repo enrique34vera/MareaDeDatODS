@@ -440,7 +440,7 @@ print(sem_marejada)
 #| echo: false
 print(sem_tsunami)
 ```
-[Curso gratuito sobre tsunamis](www.coursera.org/learn/introduccion-tsunamis){target="_blank"}
+[Curso gratuito sobre tsunamis](https://www.coursera.org/learn/introduccion-tsunamis){target="_blank"}
 :::
 
 ### Column
