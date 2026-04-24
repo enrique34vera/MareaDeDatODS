@@ -280,7 +280,7 @@ dict(
 ## Row {height=2%}
 
 ::: {.card title="Conoce más"}
-[¡Conoce los riesgos por altas temperaturas!](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf){target="_blank"}
+[**¡Conoce los riesgos por altas temperaturas!**](https://www.imss.gob.mx/sites/all/statics/pdf/guarderias/onda-calor.pdf){target="_blank" .link-alerta}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -296,7 +296,7 @@ Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué tan fuerte va a llover?](https://x.com/conagua_clima/status/1017166937569161217){target="_blank"}
+[**¿Qué tan fuerte va a llover?**](https://x.com/conagua_clima/status/1017166937569161217){target="_blank" .link-alerta}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -312,7 +312,7 @@ Fuente de los datos: [Instituto de Ciencias de la Atmósfera y Cambio Climático
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué hago si hay vientos fuertes?](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893){target="_blank"}
+[**¿Qué hago si hay vientos fuertes?**](https://www.facebook.com/photo/?fbid=1299650188878277&set=a.466284112214893){target="_blank" .link-alerta}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -427,7 +427,7 @@ Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.
 
 ### Column
 ::: {.card title="Conoce más"}
-[¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949){target="_blank"}
+[¡**Cuidado con el oleaje alto!**](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949){target="_blank" .link-alerta}
 ```{python}
 #| output: False
 fig=go.Figure()
@@ -441,7 +441,7 @@ fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
 
 ### Column
 ::: {.card title="Conoce más"}
-[¿Qué hago si hay marejadas?](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321){target="_blank"}
+[**¿Qué hago si hay marejadas?**](https://www.facebook.com/photo/?fbid=1380740490766282&set=a.360223536151321){target="_blank" .link-alerta}
 ```{python}
 figH=go.Figure()
 figH.add_trace(go.Scatter(x=humedad_rel['Tiempo_datetime'], y=humedad_rel['Humedad relativa'], name='Medición', line=dict(color='green',width=2)))
@@ -502,12 +502,12 @@ print(sem_tsunami)
 ### Column
 #### Row
 :::{.card expandable="False"}
-[¿Qué hago en caso de tsunami?](https://diredimoat.semar.gob.mx/cat/Archivos/Medidas.pdf){target="_blank"}
+[**¿Qué hago en caso de tsunami?**](https://diredimoat.semar.gob.mx/cat/Archivos/Medidas.pdf){target="_blank" .link-alerta}
 :::
 
 #### Row
 :::{.card expandable="False"}
-[¿Qué hago en caso de huracán?](https://www.gob.mx/cms/uploads/attachment/file/926668/Infografi_as_-_Huracanes.pdf){target="_blank"}
+[**¿Qué hago en caso de huracán?**](https://www.gob.mx/cms/uploads/attachment/file/926668/Infografi_as_-_Huracanes.pdf){target="_blank" .link-alerta}
 :::
 
 ### Column
