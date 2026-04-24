@@ -25,6 +25,7 @@ pronostico_meteorologia = pd.read_csv('../datos/meteorologia_veracruz_2026-04-20
 pronostico_oleaje = pd.read_csv('../datos/altura_significante_20260423.csv')
 poblacion_Veracruz = pd.read_csv('../datos/conjunto_de_datos_iter_30CSV20.csv', usecols=[3,5,9])
 impacto_Nacional=pd.read_excel('../datos/Basehistorica_2000_a_2024.xlsx', usecols=[0,1,2,3,4,5,6,8,9,15])
+mar_de_fondo = pd.read_csv("../datos/mar_de_fondo_marejada_20260424.csv")
 ```
 
 ```{python}
@@ -395,7 +396,7 @@ dict(
 dict(
     icon="exclamation-diamond-fill", 
     color="primary", 
-    value="---"
+    value=round(float(mar_de_fondo.iloc[-1]['hs_swell_m']),2)
 )
 ```
 ### Column
