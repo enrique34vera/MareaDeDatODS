@@ -22,6 +22,7 @@ humedad_rel = pd.read_csv("../datos/data-1_porcentaje.csv")
 velocidad_viento = pd.read_csv("../datos/data-1_metrosxsegundo.csv")
 direccion_viento = pd.read_csv("../datos/data-1_grados.csv")
 pronostico_meteorologia = pd.read_csv('../datos/meteorologia_veracruz_2026-04-20.csv')
+pronostico_oleaje = pd.read_csv('../datos/altura_significante_20260423.csv')
 poblacion_Veracruz = pd.read_csv('../datos/conjunto_de_datos_iter_30CSV20.csv', usecols=[3,5,9])
 impacto_Nacional=pd.read_excel('../datos/Basehistorica_2000_a_2024.xlsx', usecols=[0,1,2,3,4,5,6,8,9,15])
 ```
@@ -30,8 +31,7 @@ impacto_Nacional=pd.read_excel('../datos/Basehistorica_2000_a_2024.xlsx', usecol
 # Preparar los datos
 
 #  1. Cambiar el nombre de las columnas en el dataframe 'nivel_del_mar'
-nivel_del_mar.rename(columns={'Nivel del mar (radar promedio)':'Radar promedio', 'Nivel del mar (flotador)':'Flotador'},
-                    inplace=True)
+nivel_del_mar.rename(columns={'Nivel del mar (radar promedio)':'Radar promedio', 'Nivel del mar (flotador)':'Flotador'}, inplace=True)
 
 #  2. Creación de una nueva columna que contiene las fechas del archivo en formato 'datetime'
 nivel_del_mar['Tiempo_datetime']=pd.to_datetime(nivel_del_mar['Tiempo'], format='%Y-%m-%d %H:%M:%S')
@@ -39,8 +39,8 @@ temperatura['Tiempo_datetime']=pd.to_datetime(temperatura['Tiempo'], format='%Y-
 humedad_rel['Tiempo_datetime']=pd.to_datetime(humedad_rel['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 velocidad_viento['Tiempo_datetime']=pd.to_datetime(velocidad_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')
 direccion_viento['Tiempo_datetime']=pd.to_datetime(direccion_viento['Tiempo'], format='%Y-%m-%d %H:%M:%S')
-pronostico_meteorologia['Tiempo_datetime'] = pd.to_datetime(pronostico_meteorologia['date']+" "+pronostico_meteorologia['time'], 
-                                                       format='%Y-%m-%d %H:%M:%S')
+pronostico_meteorologia['Tiempo_datetime'] = pd.to_datetime(pronostico_meteorologia['date']+" "+pronostico_meteorologia['time'], format='%Y-%m-%d %H:%M:%S')
+pronostico_oleaje['Tiempo_datetime'] = pd.to_datetime(pronostico_oleaje['time'])
 
 # 3.1 Transformación de hora UTC a hora local de los datos medidos
 nivel_del_mar['Tiempo_local'] = nivel_del_mar['Tiempo_datetime'] - pd.to_timedelta(6,unit='h')
@@ -289,7 +289,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
                 name='Pronóstico', line=dict(color='blue',width=3)))
 ```
 ```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[°C]")
+fig.update_layout(xaxis_title=" ", yaxis_title="[°C]", legend=dict(x=0.01, y=0.99,         traceorder="normal", font=dict(size=12), bordercolor="Black", borderwidth=1, xanchor="left",yanchor="top"))
 ```
 Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
@@ -321,7 +321,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
                 name='Pronóstico', line=dict(color='blue',width=3)))
 ```
 ```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[m/s]")
+fig.update_layout(xaxis_title=" ", yaxis_title="[m/s]", legend=dict(x=0.01, y=0.99,         traceorder="normal", font=dict(size=12), bordercolor="Black", borderwidth=1, xanchor="left",yanchor="top"))
 ```
 Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
@@ -336,7 +336,7 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
                 name='Pronóstico', line=dict(color='blue',width=3)))
 ```
 ```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[°]")
+fig.update_layout(xaxis_title=" ", yaxis_title="[°]", legend=dict(x=0.01, y=0.99,         traceorder="normal", font=dict(size=12), bordercolor="Black", borderwidth=1, xanchor="left",yanchor="top"))
 ```
 Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
@@ -385,7 +385,7 @@ dict(
 dict(
     icon="tsunami", 
     color="primary", 
-    value="---"
+    value=round(float(pronostico_oleaje.iloc[-1]['hs_interpolado']),2)
 )
 ```
 ### Column
@@ -420,7 +420,7 @@ fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_local'], y=nivel_del_mar['Prono
                 name='Pronóstico', line=dict(color='blue',width=3)))
 ```
 ```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
+fig.update_layout(xaxis_title=" ", yaxis_title="[m]", legend=dict(x=0.01, y=0.99,         traceorder="normal", font=dict(size=12), bordercolor="Black", borderwidth=1, xanchor="left",yanchor="top"))
 ```
 Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"}
 :::
@@ -429,9 +429,14 @@ Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.
 ::: {.card title="Conoce más"}
 [¡Cuidado con el oleaje alto!](https://www.facebook.com/photo/?fbid=1156721736491620&set=pcb.1156721779824949){target="_blank"}
 ```{python}
+#| output: False
 fig=go.Figure()
-fig.add_trace(go.Scatter(x=nivel_del_mar['Tiempo_datetime'], y=nivel_del_mar['Radar promedio'], name='Medición', line=dict(color='green',width=2)))
+fig.add_trace(go.Scatter(x=pronostico_oleaje['Tiempo_datetime'], y=pronostico_oleaje['hs_interpolado'], name='Pronóstico', line=dict(color='blue',width=3)))
 ```
+```{python}
+fig.update_layout(xaxis_title=" ", yaxis_title="[m]")
+```
+[Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} 
 :::
 
 ### Column
@@ -453,7 +458,8 @@ fig.add_trace(go.Scatter(x=pronostico_meteorologia['Tiempo_datetime'], y=pronost
                 name='Pronóstico', line=dict(color='blue',width=3)))
 ```
 ```{python}
-fig.update_layout(xaxis_title=" ", yaxis_title="[%]")
+#| title: Humedad relativa
+fig.update_layout(xaxis_title=" ", yaxis_title="[%]", legend=dict(x=0.01, y=0.99,         traceorder="normal", font=dict(size=12), bordercolor="Black", borderwidth=1, xanchor="left",yanchor="top"))
 ```
 Fuente de los datos: [Servicio Mareográfico Nacional](https://www.mareografico.unam.mx/estaciones/?estacion=1){target="_blank"} (datos medidos), [Instituto de Ciencias de la Atmósfera y Cambio Climático](https://pronosticos.atmosfera.unam.mx/){target="_blank"} (datos pronóstico)
 :::
